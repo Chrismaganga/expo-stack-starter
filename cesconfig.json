@@ -1,0 +1,59 @@
+{
+  "cesVersion": "2.12.1",
+  "projectName": "invoiceGen",
+  "packages": [
+    {
+      "name": "expo-router",
+      "type": "navigation",
+      "options": {
+        "type": "stack"
+      }
+    },
+    {
+      "name": "nativewindui",
+      "type": "styling",
+      "options": {
+        "selectedComponents": [
+          "action-sheet",
+          "activity-indicator",
+          "activity-view",
+          "avatar",
+          "bottom-sheet",
+          "date-picker",
+          "picker",
+          "progress-indicator",
+          "ratings-indicator",
+          "slider",
+          "toggle",
+          "text"
+        ]
+      }
+    },
+    {
+      "name": "zustand",
+      "type": "state-management"
+    },
+    {
+      "name": "supabase",
+      "type": "authentication"
+    }
+  ],
+  "flags": {
+    "noGit": false,
+    "noInstall": false,
+    "overwrite": false,
+    "importAlias": true,
+    "packageManager": "npm",
+    "eas": true
+  },
+  "packageManager": {
+    "type": "npm",
+    "version": "10.9.0"
+  },
+  "os": {
+    "type": "Windows_NT",
+    "platform": "win32",
+    "arch": "x64",
+    "kernelVersion": "10.0.19041"
+  }
+}
