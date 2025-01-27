@@ -1,7 +1,9 @@
-import React from 'react';
-import { View, StyleSheet, Pressable } from 'react-native';
-import { Text, Card, Avatar } from 'react-native-paper';
+/* eslint-disable import/order */
+import { Avatar, Card, Text } from 'react-native-paper';
+import { Pressable, StyleSheet, View } from 'react-native';
+
 import { Link } from 'expo-router';
+import React from 'react';
 import { useCertificateStore } from '../store/store';
 
 export default function RecentCertificates() {

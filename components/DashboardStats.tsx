@@ -1,73 +1,82 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Text, Card } from 'react-native-paper';
+import { Card, Text, useTheme } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useCertificateStore } from '../store/store';
+import { useResumeStore } from '../store/resumeStore';
 
 export default function DashboardStats() {
+  const theme = useTheme();
   const certificates = useCertificateStore((state) => state.certificates);
+  const resumes = useResumeStore((state) => state.resumes);
 
-  const stats = {
-    total: certificates.length,
-    thisMonth: certificates.filter(cert => {
-      const certDate = new Date(cert.createdAt);
-      const now = new Date();
-      return certDate.getMonth() === now.getMonth() && 
-             certDate.getFullYear() === now.getFullYear();
-    }).length
-  };
+  const stats = [
+    {
+      icon: 'certificate',
+      label: 'Certificates',
+      value: certificates.length,
+      color: theme.colors.primary,
+    },
+    {
+      icon: 'file-document',
+      label: 'Resumes',
+      value: resumes.length,
+      color: '#4CAF50',
+    },
+    {
+      icon: 'text-box-edit',
+      label: 'Cover Letters',
+      value: 0, // Will be updated when cover letter store is implemented
+      color: '#FF9800',
+    },
+  ];
 
   return (
     <View style={styles.container}>
-      <View style={styles.row}>
-        <Card style={styles.card}>
-          <Card.Content>
-            <View style={styles.cardContent}>
-              <MaterialCommunityIcons name="certificate" size={32} color="#6366f1" />
-              <View>
-                <Text variant="titleLarge" style={styles.number}>{stats.total}</Text>
-                <Text variant="bodyMedium">Total Certificates</Text>
-              </View>
-            </View>
+      {stats.map((stat, index) => (
+        <Card key={index} style={styles.card}>
+          <Card.Content style={styles.cardContent}>
+            <MaterialCommunityIcons
+              name={stat.icon}
+              size={32}
+              color={stat.color}
+              style={styles.icon}
+            />
+            <Text variant="headlineMedium" style={styles.number}>
+              {stat.value}
+            </Text>
+            <Text variant="bodyMedium" style={styles.label}>
+              {stat.label}
+            </Text>
           </Card.Content>
         </Card>
-
-        <Card style={styles.card}>
-          <Card.Content>
-            <View style={styles.cardContent}>
-              <MaterialCommunityIcons name="calendar-month" size={32} color="#6366f1" />
-              <View>
-                <Text variant="titleLarge" style={styles.number}>{stats.thisMonth}</Text>
-                <Text variant="bodyMedium">This Month</Text>
-              </View>
-            </View>
-          </Card.Content>
-        </Card>
-      </View>
+      ))}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-  },
-  row: {
     flexDirection: 'row',
-    gap: 16,
-    flexWrap: 'wrap',
+    gap: 12,
+    marginTop: 16,
   },
   card: {
     flex: 1,
-    minWidth: 150,
+    borderRadius: 12,
   },
   cardContent: {
-    flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
+    padding: 16,
+  },
+  icon: {
+    marginBottom: 8,
   },
   number: {
-    color: '#6366f1',
     fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  label: {
+    color: '#666',
   },
 });

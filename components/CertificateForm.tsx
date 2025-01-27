@@ -1,10 +1,11 @@
 import { Button, TextInput, SegmentedButtons, MD3Colors } from 'react-native-paper';
 import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import { StyleSheet, View, ScrollView, Text } from 'react-native';
 import { v4 as uuidv4 } from 'uuid';
 import { useCertificateStore } from '../store/store';
 import type { Certificate } from '../store/store';
 import * as ImagePicker from 'expo-image-picker';
+import { router } from 'expo-router';
 
 interface FormData {
   recipientName: string;
@@ -59,7 +60,7 @@ export default function CertificateForm() {
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: [ImagePicker.MediaType.IMAGE],
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
@@ -86,25 +87,14 @@ export default function CertificateForm() {
   };
 
   const handleSubmit = () => {
-    const certificate: Certificate = {
-      id: uuidv4(),
-      recipientName: formData.recipientName,
-      courseName: formData.courseName,
-      completionDate: formData.completionDate,
+    const certificate = {
+      ...formData,
       certificateNumber: `CERT-${Date.now()}`,
-      issuerName: formData.issuerName,
-      issuerTitle: formData.issuerTitle,
-      grade: formData.grade,
-      duration: formData.duration,
-      description: formData.description,
-      achievements: formData.achievements,
-      logo: formData.logo,
-      templateStyle: formData.templateStyle,
-      accentColor: formData.accentColor,
     };
 
     addCertificate(certificate);
-    setCurrentCertificate(certificate);
+    
+    // Reset form
     setFormData({
       recipientName: '',
       courseName: '',
@@ -118,6 +108,9 @@ export default function CertificateForm() {
       templateStyle: 'classic',
       accentColor: '#2980b9',
     });
+
+    // Navigate back to certificates list
+    router.push('/certificates');
   };
 
   return (
@@ -207,29 +200,22 @@ export default function CertificateForm() {
             />
           }
         />
-        {formData.achievements.map((achievement, index) => (
-          achievement && (
+        <View style={styles.achievementList}>
+          {formData.achievements.map((achievement, index) => (
             <View key={index} style={styles.achievementItem}>
-              <TextInput
-                value={achievement}
-                onChangeText={(text) => {
-                  const newAchievements = [...formData.achievements];
-                  newAchievements[index] = text;
-                  setFormData({ ...formData, achievements: newAchievements });
-                }}
-                style={styles.achievementInput}
-                mode="outlined"
-                dense
-                right={
-                  <TextInput.Icon
-                    icon="close"
-                    onPress={() => removeAchievement(index)}
-                  />
-                }
-              />
+              <Text style={styles.achievementText}>{achievement}</Text>
+              {index > 0 && (
+                <Button
+                  onPress={() => removeAchievement(index)}
+                  mode="text"
+                  icon="delete"
+                >
+                  Remove
+                </Button>
+              )}
             </View>
-          )
-        ))}
+          ))}
+        </View>
       </View>
 
       <View style={styles.section}>
@@ -286,8 +272,12 @@ const styles = StyleSheet.create({
   achievementItem: {
     marginBottom: 8,
   },
-  achievementInput: {
-    flex: 1,
+  achievementText: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  achievementList: {
+    marginTop: 10,
   },
   button: {
     marginBottom: 10,

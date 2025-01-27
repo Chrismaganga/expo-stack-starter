@@ -1,9 +1,13 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Text } from 'react-native-paper';
+/* eslint-disable prettier/prettier */
+/* eslint-disable import/order */
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { useCertificateStore } from '../../store/store';
+import { StyleSheet, View } from 'react-native';
+
 import CertificatePreview from '../../components/CertificatePreview';
+/* eslint-disable import/order */
+import React from 'react';
+import { Text } from 'react-native-paper';
+import { useCertificateStore } from '../../store/store';
 
 export default function CertificateDetailsPage() {
   const { id } = useLocalSearchParams();
@@ -44,7 +48,7 @@ export default function CertificateDetailsPage() {
         <View style={styles.details}>
           <DetailItem label="Completion Date" value={certificate.completionDate} />
           <DetailItem label="Duration" value={certificate.duration} />
-          <DetailItem label="Grade" value={certificate.grade} />
+          <DetailItem label="Grade" value={certificate.grade || 'Not Graded'} />
           <DetailItem label="Issuer" value={`${certificate.issuerName} (${certificate.issuerTitle})`} />
         </View>
       </View>

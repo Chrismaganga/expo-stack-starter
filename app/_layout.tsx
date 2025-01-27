@@ -37,27 +37,39 @@ export default function RootLayout() {
                 <Tabs.Screen
                   name="index"
                   options={{
-                    title: 'Create Certificate',
-                    tabBarIcon: ({ color, size }) => (
-                      <MaterialCommunityIcons
-                        name="certificate"
-                        size={size}
-                        color={color}
-                      />
+                    title: 'Home',
+                    tabBarIcon: ({ color }) => (
+                      <MaterialCommunityIcons name="home" size={24} color={color} />
                     ),
                   }}
                 />
                 <Tabs.Screen
-                  name="certificates/index"
+                  name="certificates"
                   options={{
-                    title: 'My Certificates',
-                    tabBarIcon: ({ color, size }) => (
-                      <MaterialCommunityIcons
-                        name="folder"
-                        size={size}
-                        color={color}
-                      />
+                    title: 'Certificates',
+                    tabBarIcon: ({ color }) => (
+                      <MaterialCommunityIcons name="certificate" size={24} color={color} />
                     ),
+                  }}
+                />
+                <Tabs.Screen
+                  name="resume"
+                  options={{
+                    title: 'Resume',
+                    tabBarIcon: ({ color }) => (
+                      <MaterialCommunityIcons name="file-document" size={24} color={color} />
+                    ),
+                    headerShown: false,
+                  }}
+                />
+                <Tabs.Screen
+                  name="cover-letter"
+                  options={{
+                    title: 'Cover Letter',
+                    tabBarIcon: ({ color }) => (
+                      <MaterialCommunityIcons name="file-document-edit" size={24} color={color} />
+                    ),
+                    headerShown: false,
                   }}
                 />
               </Tabs>

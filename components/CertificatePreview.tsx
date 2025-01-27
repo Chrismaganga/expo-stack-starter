@@ -81,19 +81,37 @@ const getTemplateStyles = (templateStyle: string, accentColor: string) => {
   return baseStyles[templateStyle as keyof typeof baseStyles] || baseStyles.classic;
 };
 
-export default function CertificatePreview() {
-  const certificateRef = useRef<ViewShot>(null);
-  const currentCertificate = useCertificateStore(
-    (state) => state.currentCertificate
-  );
+interface Certificate {
+  id: string;
+  recipientName: string;
+  courseName: string;
+  completionDate: string;
+  duration: string;
+  grade?: string;  // Made optional to match store definition
+  issuerName: string;
+  issuerTitle: string;
+  templateStyle?: string;
+  accentColor?: string;
+  logo?: string;
+  description?: string;
+  achievements?: string[];
+  certificateNumber: string;
+}
 
-  if (!currentCertificate) {
+interface CertificatePreviewProps {
+  certificate: Certificate;
+}
+
+const CertificatePreview: React.FC<CertificatePreviewProps> = ({ certificate }) => {
+  const certificateRef = useRef<ViewShot>(null);
+
+  if (!certificate) {
     return null;
   }
 
   const templateStyles = getTemplateStyles(
-    currentCertificate.templateStyle,
-    currentCertificate.accentColor
+    certificate.templateStyle,
+    certificate.accentColor
   );
 
   return (
@@ -114,14 +132,14 @@ export default function CertificatePreview() {
           />
           
           <View style={styles.watermarkContainer}>
-            <Text style={[styles.watermark, { color: `${currentCertificate.accentColor}10` }]}>
+            <Text style={[styles.watermark, { color: `${certificate.accentColor}10` }]}>
               CERTIFICATE
             </Text>
           </View>
 
-          {currentCertificate.logo && (
+          {certificate.logo && (
             <Image
-              source={{ uri: currentCertificate.logo }}
+              source={{ uri: certificate.logo }}
               style={styles.logo}
               resizeMode="contain"
             />
@@ -134,27 +152,27 @@ export default function CertificatePreview() {
           <Text style={styles.subHeader}>This is to certify that</Text>
           
           <Text style={[styles.name, templateStyles.name]}>
-            {currentCertificate.recipientName}
+            {certificate.recipientName}
           </Text>
           
           <Text style={styles.text}>
             has successfully completed the course
           </Text>
           
-          <Text style={[styles.courseName, { color: currentCertificate.accentColor }]}>
-            {currentCertificate.courseName}
+          <Text style={[styles.courseName, { color: certificate.accentColor }]}>
+            {certificate.courseName}
           </Text>
 
-          {currentCertificate.description && (
+          {certificate.description && (
             <Text style={styles.description}>
-              {currentCertificate.description}
+              {certificate.description}
             </Text>
           )}
 
-          {currentCertificate.achievements.length > 0 && (
+          {certificate.achievements && certificate.achievements.length > 0 && (
             <View style={styles.achievementsContainer}>
               <Text style={styles.achievementsHeader}>Achievements:</Text>
-              {currentCertificate.achievements.map((achievement, index) => (
+              {certificate.achievements.map((achievement, index) => (
                 achievement && (
                   <Text key={index} style={styles.achievement}>
                     • {achievement}
@@ -164,40 +182,40 @@ export default function CertificatePreview() {
             </View>
           )}
 
-          {currentCertificate.grade && (
+          {certificate.grade && (
             <Text style={styles.grade}>
-              Grade: {currentCertificate.grade}
+              Grade: {certificate.grade}
             </Text>
           )}
 
           <Text style={styles.duration}>
-            Duration: {currentCertificate.duration}
+            Duration: {certificate.duration}
           </Text>
 
           <Text style={styles.date}>
-            Completed on {new Date(currentCertificate.completionDate).toLocaleDateString()}
+            Completed on {new Date(certificate.completionDate).toLocaleDateString()}
           </Text>
 
           <View style={styles.footer}>
             <View style={styles.signatureContainer}>
-              <View style={[styles.signatureLine, { backgroundColor: currentCertificate.accentColor }]} />
+              <View style={[styles.signatureLine, { backgroundColor: certificate.accentColor }]} />
               <Text style={styles.issuerName}>
-                {currentCertificate.issuerName}
+                {certificate.issuerName}
               </Text>
               <Text style={styles.issuerTitle}>
-                {currentCertificate.issuerTitle}
+                {certificate.issuerTitle}
               </Text>
             </View>
             
             <Text style={styles.certificateNumber}>
-              Certificate Number: {currentCertificate.certificateNumber}
+              Certificate Number: {certificate.certificateNumber}
             </Text>
           </View>
         </View>
       </ViewShot>
 
       <CertificateActions
-        certificate={currentCertificate}
+        certificate={certificate}
         certificateRef={certificateRef}
       />
     </View>
@@ -357,3 +375,5 @@ const styles = StyleSheet.create({
     color: '#95a5a6',
   },
 });
+
+export default CertificatePreview;
