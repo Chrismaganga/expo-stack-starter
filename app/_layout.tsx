@@ -1,83 +1,70 @@
+/* eslint-disable import/order */
+/* eslint-disable prettier/prettier */
 import '../global.css';
 import 'expo-dev-client';
+
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import { ThemeProvider as NavThemeProvider } from '@react-navigation/native';
-import { Icon } from '@roninoss/icons';
-import { Link, Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { Pressable, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-
-import { ThemeToggle } from '~/components/ThemeToggle';
-import { cn } from '~/lib/cn';
-import { useColorScheme, useInitialAndroidBarSync } from '~/lib/useColorScheme';
-import { NAV_THEME } from '~/theme';
-
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { PortalProvider } from '@gorhom/portal';
+import { Provider } from 'react-native-paper';
+import { Tabs } from 'expo-router';
+import { useColorScheme } from 'react-native';
 
 export default function RootLayout() {
-  useInitialAndroidBarSync();
-  const { colorScheme, isDarkColorScheme } = useColorScheme();
+  const colorScheme = useColorScheme();
 
   return (
-    <>
-      <StatusBar
-        key={`root-status-bar-${isDarkColorScheme ? 'light' : 'dark'}`}
-        style={isDarkColorScheme ? 'light' : 'dark'}
-      />
-      {/* WRAP YOUR APP WITH ANY ADDITIONAL PROVIDERS HERE */}
-      {/* <ExampleProvider> */}
-
+    <ActionSheetProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <BottomSheetModalProvider>
-          <ActionSheetProvider>
-            <NavThemeProvider value={NAV_THEME[colorScheme]}>
-              <Stack screenOptions={SCREEN_OPTIONS}>
-                <Stack.Screen name="index" options={INDEX_OPTIONS} />
-                <Stack.Screen name="modal" options={MODAL_OPTIONS} />
-              </Stack>
-            </NavThemeProvider>
-          </ActionSheetProvider>
+          <PortalProvider>
+            <Provider>
+              <Tabs
+                screenOptions={{
+                  tabBarActiveTintColor: colorScheme === 'dark' ? '#fff' : '#2196F3',
+                  tabBarInactiveTintColor: colorScheme === 'dark' ? '#888' : '#666',
+                  tabBarStyle: {
+                    backgroundColor: colorScheme === 'dark' ? '#1a1a1a' : '#fff',
+                  },
+                  headerStyle: {
+                    backgroundColor: colorScheme === 'dark' ? '#1a1a1a' : '#fff',
+                  },
+                  headerTintColor: colorScheme === 'dark' ? '#fff' : '#000',
+                }}
+              >
+                <Tabs.Screen
+                  name="index"
+                  options={{
+                    title: 'Create Certificate',
+                    tabBarIcon: ({ color, size }) => (
+                      <MaterialCommunityIcons
+                        name="certificate"
+                        size={size}
+                        color={color}
+                      />
+                    ),
+                  }}
+                />
+                <Tabs.Screen
+                  name="certificates/index"
+                  options={{
+                    title: 'My Certificates',
+                    tabBarIcon: ({ color, size }) => (
+                      <MaterialCommunityIcons
+                        name="folder"
+                        size={size}
+                        color={color}
+                      />
+                    ),
+                  }}
+                />
+              </Tabs>
+            </Provider>
+          </PortalProvider>
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
-
-      {/* </ExampleProvider> */}
-    </>
+    </ActionSheetProvider>
   );
 }
-
-const SCREEN_OPTIONS = {
-  animation: 'ios_from_right', // for android
-} as const;
-
-const INDEX_OPTIONS = {
-  headerLargeTitle: true,
-  title: 'NativeWindUI',
-  headerRight: () => <SettingsIcon />,
-} as const;
-
-function SettingsIcon() {
-  const { colors } = useColorScheme();
-  return (
-    <Link href="/modal" asChild>
-      <Pressable className="opacity-80">
-        {({ pressed }) => (
-          <View className={cn(pressed ? 'opacity-50' : 'opacity-90')}>
-            <Icon name="cog-outline" color={colors.foreground} />
-          </View>
-        )}
-      </Pressable>
-    </Link>
-  );
-}
-
-const MODAL_OPTIONS = {
-  presentation: 'modal',
-  animation: 'fade_from_bottom', // for android
-  title: 'Settings',
-  headerRight: () => <ThemeToggle />,
-} as const;
