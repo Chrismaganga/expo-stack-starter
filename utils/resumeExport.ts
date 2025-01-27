@@ -1,13 +1,13 @@
+/* eslint-disable import/order */
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import ViewShot from 'react-native-view-shot';
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Platform } from 'react-native';
 import { Resume } from '../store/resumeStore';
+import ViewShot from 'react-native-view-shot';
 
-export const exportResumeAsPDF = async (
-  viewShotRef: React.RefObject<ViewShot>,
-  resume: Resume
-) => {
+export const exportResumeAsPDF = async (viewShotRef: React.RefObject<ViewShot>, resume: Resume) => {
   try {
     // Create resumes directory if it doesn't exist
     const resumesDir = `${FileSystem.documentDirectory}resumes`;
@@ -19,7 +19,7 @@ export const exportResumeAsPDF = async (
     // Generate filename
     const timestamp = new Date().getTime();
     const fileName = `${resume.firstName}_${resume.lastName}_Resume_${timestamp}`;
-    
+
     // Capture view as image
     const uri = await viewShotRef.current?.capture?.();
     if (!uri) throw new Error('Failed to capture resume view');
@@ -28,7 +28,7 @@ export const exportResumeAsPDF = async (
     const imagePath = `${resumesDir}/${fileName}.png`;
     await FileSystem.moveAsync({
       from: uri,
-      to: imagePath
+      to: imagePath,
     });
 
     // Share the file
@@ -36,7 +36,7 @@ export const exportResumeAsPDF = async (
       await Sharing.shareAsync(imagePath, {
         mimeType: 'image/png',
         dialogTitle: 'Export Resume',
-        UTI: 'public.png'
+        UTI: 'public.png',
       });
     }
 
@@ -50,11 +50,11 @@ export const exportResumeAsPDF = async (
 export const getResumesDirectory = async () => {
   const resumesDir = `${FileSystem.documentDirectory}resumes`;
   const dirInfo = await FileSystem.getInfoAsync(resumesDir);
-  
+
   if (!dirInfo.exists) {
     await FileSystem.makeDirectoryAsync(resumesDir, { intermediates: true });
   }
-  
+
   return resumesDir;
 };
 

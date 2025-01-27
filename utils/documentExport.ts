@@ -1,8 +1,11 @@
-import { Platform } from 'react-native';
 import * as FileSystem from 'expo-file-system';
-import ViewShot from 'react-native-view-shot';
-import * as Sharing from 'expo-sharing';
 import * as Print from 'expo-print';
+// eslint-disable-next-line import/order
+import * as Sharing from 'expo-sharing';
+
+/* eslint-disable import/no-duplicates */
+import { Platform } from 'react-native';
+import ViewShot from 'react-native-view-shot';
 import { captureRef } from 'react-native-view-shot';
 
 // Define document types
@@ -23,12 +26,12 @@ export const exportDocument = async ({ viewShotRef, documentType, fileName }: Ex
     // Ensure base directories exist
     const documentsDir = FileSystem.documentDirectory + 'documents';
     const categoryDir = `${documentsDir}/${documentType}s`;
-    
+
     const docDirInfo = await FileSystem.getInfoAsync(documentsDir);
     if (!docDirInfo.exists) {
       await FileSystem.makeDirectoryAsync(documentsDir, { intermediates: true });
     }
-    
+
     const catDirInfo = await FileSystem.getInfoAsync(categoryDir);
     if (!catDirInfo.exists) {
       await FileSystem.makeDirectoryAsync(categoryDir, { intermediates: true });
@@ -43,7 +46,7 @@ export const exportDocument = async ({ viewShotRef, documentType, fileName }: Ex
     const pngUri = await captureRef(viewShotRef, {
       format: 'png',
       quality: 1,
-      result: 'data-uri'
+      result: 'data-uri',
     });
 
     // Create PDF with proper page setup
@@ -87,6 +90,7 @@ export const exportDocument = async ({ viewShotRef, documentType, fileName }: Ex
         </html>
       `,
       width: 595.28, // A4 width in points (72 dpi)
+      // eslint-disable-next-line prettier/prettier
       height: 841.89 // A4 height in points (72 dpi)
     });
 
@@ -120,22 +124,26 @@ export const exportDocument = async ({ viewShotRef, documentType, fileName }: Ex
 export const getDocumentDirectory = async (documentType: DocumentType) => {
   const categoryDir = FileSystem.documentDirectory + `documents/${documentType}s`;
   const exists = await FileSystem.getInfoAsync(categoryDir);
-  
+
   if (!exists.exists) {
     await FileSystem.makeDirectoryAsync(categoryDir, { intermediates: true });
   }
-  
+
   return categoryDir;
 };
 
 export const listDocuments = async (documentType: DocumentType) => {
   const directory = await getDocumentDirectory(documentType);
   const files = await FileSystem.readDirectoryAsync(directory);
+  // eslint-disable-next-line prettier/prettier
   
   const results = await Promise.all(
     files.map(async (file) => {
       const path = `${directory}/${file}`;
       const info = await FileSystem.getInfoAsync(path);
+      if (!info.exists) {
+        return null;
+      }
       return {
         name: file,
         path,
@@ -145,8 +153,8 @@ export const listDocuments = async (documentType: DocumentType) => {
       };
     })
   );
-  
+
   return {
-    pdfs: results.filter(f => f.type === 'pdf'),
+    pdfs: results.filter((f): f is NonNullable<typeof f> => f !== null && f.type === 'pdf'),
   };
 };

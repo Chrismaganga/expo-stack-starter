@@ -1,11 +1,15 @@
-import { Stack, useLocalSearchParams } from 'expo-router';
-import { StyleSheet, View, ScrollView, Alert } from 'react-native';
-import { Text, Button, Menu } from 'react-native-paper';
+/* eslint-disable prettier/prettier */
+/* eslint-disable import/order */
+import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { Button, Menu, Text } from 'react-native-paper';
 import React, { useRef, useState } from 'react';
-import ViewShot from 'react-native-view-shot';
-import { useResumeStore } from '../../store/resumeStore';
+/* eslint-disable import/order */
+import { Stack, useLocalSearchParams } from 'expo-router';
+
 import ResumeTemplate from '../../components/ResumeTemplate';
+import ViewShot from 'react-native-view-shot';
 import { exportDocument } from '../../utils/documentExport';
+import { useResumeStore } from '../../store/resumeStore';
 
 export default function ResumeDetailScreen() {
   const { id } = useLocalSearchParams();

@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Alert, Platform, ActivityIndicator } from 'react-native';
-import { Button } from 'react-native-paper';
+/* eslint-disable import/order */
+/* eslint-disable prettier/prettier */
 import * as FileSystem from 'expo-file-system';
-import * as Sharing from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
-import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
-import ViewShot from 'react-native-view-shot';
+import * as Sharing from 'expo-sharing';
+
+import { ActivityIndicator, Alert, Platform, StyleSheet, View } from 'react-native';
+/* eslint-disable import/order */
+import React, { useState } from 'react';
+import { SaveFormat, manipulateAsync } from 'expo-image-manipulator';
+import ViewShot, { captureRef } from 'react-native-view-shot';
+
+import { Button } from 'react-native-paper';
 import { Certificate } from '../store/store';
 
 interface CertificateActionsProps {
@@ -30,11 +35,11 @@ export default function CertificateActions({ certificate, certificateRef }: Cert
 
       // Capture options specific to platform
       const captureOptions = Platform.OS === 'web' 
-        ? { format: 'png', quality: 0.8, result: 'base64' }
-        : { format: 'png', quality: 0.8 };
+        ? { format: 'png' as const, quality: 0.8, result: 'base64' as const }
+        : { format: 'png' as const, quality: 0.8 };
 
       // Capture the certificate view
-      const result = await certificateRef.current.capture(captureOptions);
+      const result = await captureRef(certificateRef.current, captureOptions);
       
       if (Platform.OS === 'web') {
         return `data:image/png;base64,${result}`;
@@ -86,7 +91,8 @@ export default function CertificateActions({ certificate, certificateRef }: Cert
         document.body.removeChild(link);
       } catch (error) {
         console.error('Error saving on web:', error);
-        Alert.alert('Error', `Failed to save certificate: ${error.message}`);
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        Alert.alert('Error', `Failed to save certificate: ${errorMessage}`);
       }
       return;
     }
@@ -123,9 +129,10 @@ export default function CertificateActions({ certificate, certificateRef }: Cert
       );
     } catch (error) {
       console.error('Error saving to gallery:', error);
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       Alert.alert(
         'Error',
-        'Failed to save certificate to gallery. Please try again.'
+        `Failed to save certificate to gallery: ${errorMessage}`
       );
     } finally {
       setIsLoading(false);
@@ -165,9 +172,10 @@ export default function CertificateActions({ certificate, certificateRef }: Cert
       });
     } catch (error) {
       console.error('Error sharing certificate:', error);
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
       Alert.alert(
         'Error',
-        'Failed to share certificate. Please try again.'
+        `Failed to share certificate: ${errorMessage}`
       );
     } finally {
       setIsLoading(false);
@@ -213,7 +221,8 @@ export default function CertificateActions({ certificate, certificateRef }: Cert
           window.URL.revokeObjectURL(url);
         } catch (webError) {
           console.error('Web download error:', webError);
-          throw new Error(`Web download failed: ${webError.message}`);
+          const errorMessage = webError instanceof Error ? webError.message : 'An unknown error occurred';
+          throw new Error(`Web download failed: ${errorMessage}`);
         }
       } else {
         const filePath = `${FileSystem.cacheDirectory}${generateFileName()}.png`;
@@ -224,7 +233,8 @@ export default function CertificateActions({ certificate, certificateRef }: Cert
       }
     } catch (error) {
       console.error('Error downloading certificate:', error);
-      Alert.alert('Error', `Failed to download certificate: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      Alert.alert('Error', `Failed to download certificate: ${errorMessage}`);
     } finally {
       setIsLoading(false);
     }

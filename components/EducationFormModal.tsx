@@ -1,6 +1,9 @@
+/* eslint-disable import/order */
+/* eslint-disable prettier/prettier */
+import { Button, Modal, Portal, Text, TextInput } from 'react-native-paper';
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { Modal, Portal, Text, TextInput, Button } from 'react-native-paper';
+import { ScrollView, StyleSheet, View } from 'react-native';
+
 import { v4 as uuidv4 } from 'uuid';
 
 interface EducationFormModalProps {
@@ -29,7 +32,7 @@ export default function EducationFormModal({
   );
 
   const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({
+    setFormData((prev: any) => ({
       ...prev,
       [field]: value,
     }));

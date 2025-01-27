@@ -1,6 +1,9 @@
+import { Button, Card, List, Text } from 'react-native-paper';
+// eslint-disable-next-line import/order
+import { StyleSheet, View } from 'react-native';
+
+/* eslint-disable import/order */
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Text, Button, Card, List } from 'react-native-paper';
 import { router } from 'expo-router';
 import { useCertificateStore } from '../store/store';
 import { useResumeStore } from '../store/resumeStore';
@@ -8,7 +11,7 @@ import { useResumeStore } from '../store/resumeStore';
 export default function RecentDocuments() {
   const certificates = useCertificateStore((state) => state.certificates);
   const resumes = useResumeStore((state) => state.resumes);
-  
+
   const recentCertificates = certificates.slice(0, 3);
   const recentResumes = resumes.slice(0, 3);
 
@@ -24,12 +27,11 @@ export default function RecentDocuments() {
             mode="text"
             onPress={() => router.push('/resume')}
             icon="chevron-right"
-            contentStyle={styles.viewAllButton}
-          >
+            contentStyle={styles.viewAllButton}>
             View All
           </Button>
         </View>
-        
+
         {recentResumes.length === 0 ? (
           <Card style={styles.emptyCard}>
             <Card.Content>

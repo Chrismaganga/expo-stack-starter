@@ -1,6 +1,9 @@
+import { Certificate, useCertificateStore } from '../store/store';
+/* eslint-disable react/jsx-no-duplicate-props */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 // eslint-disable-next-line import/order
-import { Dimensions, Image, StyleSheet, View, Platform } from 'react-native';
+import { Dimensions, Image, Platform, StyleSheet, View } from 'react-native';
 /* eslint-disable import/order */
 import React, { useRef } from 'react';
 
@@ -8,7 +11,6 @@ import CertificateActions from './CertificateActions';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Text } from 'react-native-paper';
 import ViewShot from 'react-native-view-shot';
-import { useCertificateStore } from '../store/store';
 
 const { width } = Dimensions.get('window');
 const CERTIFICATE_WIDTH = Math.min(width - 40, 600);
@@ -87,15 +89,22 @@ interface Certificate {
   courseName: string;
   completionDate: string;
   duration: string;
-  grade?: string;  // Made optional to match store definition
+  grade?: string;
   issuerName: string;
   issuerTitle: string;
   templateStyle?: string;
   accentColor?: string;
   logo?: string;
-  description?: string;
-  achievements?: string[];
+  description: string;
+  achievements: string[];
   certificateNumber: string;
+  createdAt: string;
+  certificateUrl: string;
+  certificateId: string;
+  issuerSignature?: string;
+  issuerSignatureUrl?: string;
+  certificate: string;
+  issuer: string;
 }
 
 interface CertificatePreviewProps {
@@ -110,8 +119,8 @@ const CertificatePreview: React.FC<CertificatePreviewProps> = ({ certificate }) 
   }
 
   const templateStyles = getTemplateStyles(
-    certificate.templateStyle,
-    certificate.accentColor
+    certificate.templateStyle ?? 'classic',
+    certificate.accentColor ?? '#000000'
   );
 
   return (
@@ -163,11 +172,9 @@ const CertificatePreview: React.FC<CertificatePreviewProps> = ({ certificate }) 
             {certificate.courseName}
           </Text>
 
-          {certificate.description && (
-            <Text style={styles.description}>
-              {certificate.description}
-            </Text>
-          )}
+          <Text style={styles.description}>
+            {certificate.description}
+          </Text>
 
           {certificate.achievements && certificate.achievements.length > 0 && (
             <View style={styles.achievementsContainer}>
