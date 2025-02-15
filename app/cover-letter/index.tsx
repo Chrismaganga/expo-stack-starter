@@ -1,6 +1,7 @@
+import { Button, Card, IconButton, List, Text } from 'react-native-paper';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { Stack, router } from 'expo-router';
-import { StyleSheet, View, ScrollView } from 'react-native';
-import { Text, Button, Card, IconButton, List } from 'react-native-paper';
+
 import React from 'react';
 import { useCoverLetterStore } from '../../store/coverLetterStore';
 
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     marginTop: 8,
-    color: '#666',
+    color: '#135496',
   },
   actions: {
     gap: 12,
@@ -173,6 +174,6 @@ const styles = StyleSheet.create({
   featureItem: {
     fontSize: 16,
     marginBottom: 8,
-    color: '#444',
+    color: 'hsl(90, 90%, 40%)',
   },
 });

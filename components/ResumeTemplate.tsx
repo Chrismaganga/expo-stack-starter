@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 import { StyleSheet, View } from 'react-native';
 
 /* eslint-disable prettier/prettier */
@@ -22,6 +23,9 @@ export default function ResumeTemplate({ resume }: ResumeTemplateProps) {
           <Text style={styles.contactText}>{resume.phone}</Text>
           <Text style={styles.contactText}>
             {resume.address}, {resume.city}, {resume.country}
+            {resume.postalCode}
+            {resume.state}
+            
           </Text>
         </View>
       </View>
@@ -105,6 +109,12 @@ export default function ResumeTemplate({ resume }: ResumeTemplateProps) {
               </Text>
             ))}
           </View>
+          <View style={styles.actions}>
+            <View style={styles.downloadButton}>
+              <Text style={styles.downloadButtonText}>Download PDF</Text>
+            </View>
+            <CaptureOptions />
+          </View>
         </View>
       )}
     </View>
@@ -127,7 +137,7 @@ const styles = StyleSheet.create({
   },
   jobTitle: {
     fontSize: 20,
-    color: '#666',
+    color: '#771313',
     marginBottom: 12,
   },
   contactInfo: {
@@ -135,7 +145,7 @@ const styles = StyleSheet.create({
   },
   contactText: {
     fontSize: 14,
-    color: '#444',
+    color: 'cyan',
     marginBottom: 2,
   },
   section: {
@@ -165,16 +175,16 @@ const styles = StyleSheet.create({
   },
   dates: {
     fontSize: 14,
-    color: '#666',
+    color: '#721919',
   },
   subtitle: {
     fontSize: 15,
-    color: '#444',
+    color: '#490505',
     marginBottom: 4,
   },
   text: {
     fontSize: 14,
-    color: '#666',
+    color: '#080750',
     lineHeight: 20,
   },
   achievements: {
@@ -182,7 +192,7 @@ const styles = StyleSheet.create({
   },
   achievement: {
     fontSize: 14,
-    color: '#666',
+    color: '#490707',
     marginBottom: 2,
   },
   skillsGrid: {
@@ -201,7 +211,7 @@ const styles = StyleSheet.create({
   },
   skillLevel: {
     fontSize: 12,
-    color: '#666',
+    color: '#078611',
   },
   languagesGrid: {
     flexDirection: 'row',
@@ -210,6 +220,6 @@ const styles = StyleSheet.create({
   },
   language: {
     fontSize: 14,
-    color: '#444',
+    color: '#0b7e11',
   },
 });

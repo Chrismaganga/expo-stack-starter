@@ -1,11 +1,14 @@
-import { Button, TextInput, SegmentedButtons, MD3Colors } from 'react-native-paper';
-import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView, Text } from 'react-native';
-import { v4 as uuidv4 } from 'uuid';
-import { useCertificateStore } from '../store/store';
-import type { Certificate } from '../store/store';
+/* eslint-disable prettier/prettier */
+/* eslint-disable import/order */
 import * as ImagePicker from 'expo-image-picker';
-import { router } from 'expo-router';
+
+import { Button, SegmentedButtons, TextInput } from 'react-native-paper';
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+
+import type { Certificate } from '../store/store';
+import { useCertificateStore } from '../store/store';
+import { v4 as uuidv4 } from 'uuid';
 
 interface FormData {
   recipientName: string;
@@ -29,11 +32,15 @@ const TEMPLATE_STYLES = [
 ];
 
 const ACCENT_COLORS = [
-  { label: 'Blue', value: '#2980b9' },
+  { label: 'Blue', value: '#053a5e' },
   { label: 'Green', value: '#27ae60' },
   { label: 'Purple', value: '#8e44ad' },
   { label: 'Red', value: '#c0392b' },
   { label: 'Orange', value: '#d35400' },
+  { label: 'Yellow', value: '#f1c40f' },
+  { label: 'Gray', value: '#7f8c8d' },
+  { label: 'Black', value: '#2c3e50' },
+  { label: 'White', value: '#ffffff' },
 ];
 
 export default function CertificateForm() {
@@ -60,7 +67,7 @@ export default function CertificateForm() {
 
   const pickImage = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: [ImagePicker.MediaType.IMAGE],
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
@@ -87,14 +94,30 @@ export default function CertificateForm() {
   };
 
   const handleSubmit = () => {
-    const certificate = {
-      ...formData,
+    const certificate: Certificate = {
+      id: uuidv4(),
+      recipientName: formData.recipientName,
+      courseName: formData.courseName,
+      completionDate: formData.completionDate,
       certificateNumber: `CERT-${Date.now()}`,
+      issuerName: formData.issuerName,
+      issuerTitle: formData.issuerTitle,
+      grade: formData.grade,
+      duration: formData.duration,
+      description: formData.description,
+      achievements: formData.achievements,
+      logo: formData.logo,
+      templateStyle: formData.templateStyle,
+      accentColor: formData.accentColor,
+      createdAt: '',
+      certificateUrl: '',
+      certificateId: '',
+      certificate: '',
+      issuer: ''
     };
 
     addCertificate(certificate);
-    
-    // Reset form
+    setCurrentCertificate(certificate);
     setFormData({
       recipientName: '',
       courseName: '',
@@ -108,9 +131,6 @@ export default function CertificateForm() {
       templateStyle: 'classic',
       accentColor: '#2980b9',
     });
-
-    // Navigate back to certificates list
-    router.push('/certificates');
   };
 
   return (
@@ -200,22 +220,29 @@ export default function CertificateForm() {
             />
           }
         />
-        <View style={styles.achievementList}>
-          {formData.achievements.map((achievement, index) => (
+        {formData.achievements.map((achievement, index) => (
+          achievement && (
             <View key={index} style={styles.achievementItem}>
-              <Text style={styles.achievementText}>{achievement}</Text>
-              {index > 0 && (
-                <Button
-                  onPress={() => removeAchievement(index)}
-                  mode="text"
-                  icon="delete"
-                >
-                  Remove
-                </Button>
-              )}
+              <TextInput
+                value={achievement}
+                onChangeText={(text) => {
+                  const newAchievements = [...formData.achievements];
+                  newAchievements[index] = text;
+                  setFormData({ ...formData, achievements: newAchievements });
+                }}
+                style={styles.achievementInput}
+                mode="outlined"
+                dense
+                right={
+                  <TextInput.Icon
+                    icon="close"
+                    onPress={() => removeAchievement(index)}
+                  />
+                }
+              />
             </View>
-          ))}
-        </View>
+          )
+        ))}
       </View>
 
       <View style={styles.section}>
@@ -272,12 +299,8 @@ const styles = StyleSheet.create({
   achievementItem: {
     marginBottom: 8,
   },
-  achievementText: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  achievementList: {
-    marginTop: 10,
+  achievementInput: {
+    flex: 1,
   },
   button: {
     marginBottom: 10,

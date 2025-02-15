@@ -1,18 +1,17 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable import/order */
+import { CertificateInterface, CertificatePreview } from '../../components/CertificatePreview';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 
-import CertificatePreview from '../../components/CertificatePreview';
-/* eslint-disable import/order */
 import React from 'react';
 import { Text } from 'react-native-paper';
 import { useCertificateStore } from '../../store/store';
 
 export default function CertificateDetailsPage() {
   const { id } = useLocalSearchParams();
+  console.log('Retrieved ID:', id);
   const certificates = useCertificateStore((state) => state.certificates);
-  const certificate = certificates.find(cert => cert.id === id);
+  console.log('Certificates:', certificates);
+  const certificate = certificates.find(cert => cert.id === id) as CertificateInterface;
 
   if (!certificate) {
     return (
@@ -42,7 +41,7 @@ export default function CertificateDetailsPage() {
         </View>
 
         <View style={styles.previewSection}>
-          <CertificatePreview certificate={certificate} />
+          <CertificatePreview certificate={certificate} />    
         </View>
 
         <View style={styles.details}>

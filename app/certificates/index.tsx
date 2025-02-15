@@ -10,12 +10,29 @@ import { Text } from 'react-native-paper';
 import ViewShot from 'react-native-view-shot';
 import { useCertificateStore } from '../../store/store';
 
-interface Certificate {
-  id: string;
-  recipientName: string;
-  courseName: string;
-  completionDate: string;
-  certificateNumber: string;
+class Certificate {
+  fields: {
+    id: string;
+    recipientName: string;
+    courseName: string;
+    completionDate: string;
+    certificateNumber: string;
+    certificateUrl: string;
+    certificateId: string;
+    certificate: string;
+    issuer: string;
+    issuerName: string;
+    issuerTitle: string;
+    issuerSignature?: string;
+    grade?: string;
+    duration: string;
+    description: string;
+    achievements: string[];
+    logo?: string;
+    templateStyle: 'classic' | 'modern' | 'minimal';
+    accentColor: string;
+    createdAt: string;
+  };
 }
 
 export default function CertificatesScreen() {

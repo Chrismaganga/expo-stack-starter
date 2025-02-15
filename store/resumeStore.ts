@@ -37,11 +37,15 @@ export interface Resume {
   phone: string;
   address: string;
   city: string;
+  postalCode: string;
+  state: string;
   country: string;
   profileSummary: string;
   
   // Professional Details
   jobTitle: string;
+  companyName?: string;
+  github?: string;
   linkedIn?: string;
   portfolio?: string;
   

@@ -1,8 +1,10 @@
+/* eslint-disable import/order */
 /* eslint-disable prettier/prettier */
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface Certificate {
+  [x: string]: any;
   id: string;
   recipientName: string;
   courseName: string;
@@ -19,6 +21,12 @@ export interface Certificate {
   templateStyle: 'classic' | 'modern' | 'minimal';
   accentColor: string;
   createdAt: string;
+  certificateUrl: string;
+  certificateId: string;
+  certificate?: string;
+  issuer: string;
+  
+  
 }
 
 type CertificateInput = Omit<Certificate, 'id' | 'createdAt'>;

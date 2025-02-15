@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable import/order */
 import { Avatar, Card, Text } from 'react-native-paper';
 import { Pressable, StyleSheet, View } from 'react-native';

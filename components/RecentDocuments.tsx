@@ -1,12 +1,15 @@
+/* eslint-disable import/order */
+/* eslint-disable prettier/prettier */
 import { Button, Card, List, Text } from 'react-native-paper';
 // eslint-disable-next-line import/order
 import { StyleSheet, View } from 'react-native';
 
-/* eslint-disable import/order */
-import React from 'react';
 import { router } from 'expo-router';
 import { useCertificateStore } from '../store/store';
 import { useResumeStore } from '../store/resumeStore';
+
+/* eslint-disable import/order */
+
 
 export default function RecentDocuments() {
   const certificates = useCertificateStore((state) => state.certificates);
@@ -88,6 +91,8 @@ export default function RecentDocuments() {
               left={(props) => <List.Icon {...props} icon="certificate" />}
               right={(props) => <List.Icon {...props} icon="chevron-right" />}
               onPress={() => router.push(`/certificates/${certificate.id}`)}
+              onLongPress={() => certificate.saveToGallery(certificate.id)}
+          
               style={styles.listItem}
             />
           ))

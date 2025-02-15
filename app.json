@@ -1,10 +1,9 @@
 {
   "expo": {
-    "name": "invoiceGen",
-    "slug": "invoiceGen",
+    "name": "pdfgenerator",
+    "slug": "pdfgenerator",
     "version": "1.0.0",
-
-    "scheme": "invoiceGen",
+    "scheme": "pdfgenerator",
     "web": {
       "bundler": "metro",
       "output": "static",
@@ -21,29 +20,41 @@
     ],
     "experiments": {
       "typedRoutes": true,
-
       "tsconfigPaths": true
     },
-
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-
     "userInterfaceStyle": "automatic",
-
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.maganga.pdfgenerator",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.maganga.pdfgenerator",
+      "versionCode": 1
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "10127aeb-3ab1-4fae-8149-212cb9b1de55"
       }
-    }
+    },
+    "owner": "maganga"
   }
-}
+  }
+
