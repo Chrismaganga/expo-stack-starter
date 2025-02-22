@@ -7,33 +7,18 @@ import * as Sharing from 'expo-sharing';
 
 import { ActivityIndicator, Alert, Platform, StyleSheet, View } from 'react-native';
 import React, { useState } from 'react';
-import { SaveFormat, manipulateAsync } from 'expo-image-manipulator';
 import ViewShot, { captureRef } from 'react-native-view-shot';
 
 import { Button } from 'react-native-paper';
+import { CaptureOptions } from 'react-native-view-shot';
 import { Certificate } from '../store/store';
 
-const captureOptions: {
-    format: "jpg" | "png" | "jpeg" | "webm" | "raw" | undefined;
-    quality: number;
-    result: string;
-} = {
-    format: "pdf",
-    quality: 1,
-    result: "tmpfile",
-    
-    
-};
 interface CertificateActionsProps {
   certificate: Certificate;
   certificateRef: React.RefObject<ViewShot>;
+  setIsLoading: (isLoading: boolean) => void;
+  options: CaptureOptions;
 }
-
-type CaptureOptions = {
-    format: "jpg" | "png" | "jpeg" | "webm" | "raw" | undefined;
-    quality: number;
-    result: string;
-};
 
 export default function CertificateActions({ certificate, certificateRef }: CertificateActionsProps) {
   const [isLoading, setIsLoading] = useState(false);
@@ -193,7 +178,7 @@ export default function CertificateActions({ certificate, certificateRef }: Cert
   if (isLoading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#2196F3" />
+        <ActivityIndicator size="large" color="#4121f3" />
       </View>
     );
   }

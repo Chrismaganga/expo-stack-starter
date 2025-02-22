@@ -1,225 +1,157 @@
-/* eslint-disable import/order */
-import { StyleSheet, View } from 'react-native';
+import * as Print from 'expo-print';
 
-/* eslint-disable prettier/prettier */
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useRef, useState } from 'react';
+
+import { CaptureOptions } from 'react-native-view-shot'; // Re-import if needed
 import React from 'react';
 import { Resume } from '../store/resumeStore';
 import { Text } from 'react-native-paper';
+import ViewShot from 'react-native-view-shot'; // Ensure you import ViewShot
+import { exportDocument } from '../utils/documentExport';
+import { loadOptions } from '@babel/core';
 
-interface ResumeTemplateProps {
+// Use CaptureOptions in your props or function definitions
+type ResumeTemplateProps = {
   resume: Resume;
-}
-
+  options: CaptureOptions; // Example usage
+};
 export default function ResumeTemplate({ resume }: ResumeTemplateProps) {
+  
+const certificateRef = useRef(null);
+const [isLoading, setIsLoading] = useState(false);
+
+  const generatePDF = async () => {
+    const html = `
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1 { color: #333; text-align: center; }
+            h2 { color: #2196F3; border-bottom: 2px solid #e0e0e0; padding-bottom: 5px; }
+            p, li { font-size: 14px; line-height: 1.5; color: #444; }
+            .section { margin-bottom: 20px; }
+            .item { margin-bottom: 15px; }
+            .contact { text-align: center; margin-bottom: 20px; }
+          </style>
+        </head>
+        <body>
+          <h1>${resume.firstName} ${resume.lastName}</h1>
+          <p class="contact">${resume.email} | ${resume.phone} | ${resume.address}, ${resume.city}, ${resume.state} ${resume.postalCode}, ${resume.country}</p>
+
+          ${resume.profileSummary ? `<div class="section"><h2>Professional Summary</h2><p>${resume.profileSummary}</p></div>` : ''}
+
+          ${resume.education?.length > 0 ? `
+            <div class="section">
+              <h2>Education</h2>
+              ${resume.education.map(edu => `
+                <div class="item">
+                  <h3>${edu.institution}</h3>
+                  <p>${edu.degree} in ${edu.field} (${edu.startDate} - ${edu.endDate})</p>
+                  <p>${edu.description || ''}</p>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          ${resume.workExperience?.length > 0 ? `
+            <div class="section">
+              <h2>Work Experience</h2>
+              ${resume.workExperience.map(exp => `
+                <div class="item">
+                  <h3>${exp.company} (${exp.startDate} - ${exp.endDate})</h3>
+                  <p>${exp.position}</p>
+                  <p>${exp.description || ''}</p>
+                  ${exp.achievements?.length ? `<ul>${exp.achievements.map(ach => `<li>${ach}</li>`).join('')}</ul>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          ${resume.skills?.length > 0 ? `
+            <div class="section">
+              <h2>Skills</h2>
+              <ul>${resume.skills.map(skill => `<li>${skill.name} (${skill.level})</li>`).join('')}</ul>
+            </div>
+          ` : ''}
+
+          ${resume.languages?.length > 0 ? `
+            <div class="section">
+              <h2>Languages</h2>
+              <ul>${resume.languages.map(lang => `<li>${lang.language} - ${lang.proficiency}</li>`).join('')}</ul>
+            </div>
+          ` : ''}
+        </body>
+      </html>
+    `;
+
+    try {
+      const { uri } = await Print.printToFileAsync({ html });
+      await Sharing.shareAsync(uri);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
-      {/* Header Section */}
+      {/* Resume Content */}
       <View style={styles.header}>
         <Text style={styles.name}>{resume.firstName} {resume.lastName}</Text>
         <Text style={styles.jobTitle}>{resume.jobTitle}</Text>
-        
-        <View style={styles.contactInfo}>
-          <Text style={styles.contactText}>{resume.email}</Text>
-          <Text style={styles.contactText}>{resume.phone}</Text>
-          <Text style={styles.contactText}>
-            {resume.address}, {resume.city}, {resume.country}
-            {resume.postalCode}
-            {resume.state}
-            
-          </Text>
-        </View>
+        <Text style={styles.contactText}>{resume.email} | {resume.phone}</Text>
       </View>
 
-      {/* Profile Summary */}
-      {resume.profileSummary && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Professional Summary</Text>
-          <Text style={styles.text}>{resume.profileSummary}</Text>
-        </View>
-      )}
+      {/* Download & Capture Options */}
+      <View style={styles.actions}>
+        <TouchableOpacity style={styles.downloadButton} onPress={generatePDF}>
+          <Text style={styles.downloadButtonText}>Download PDF</Text>
+        </TouchableOpacity>
+        <ViewShot ref={certificateRef}>
+       <CaptureOptions resume={resume} certificateRef={certificateRef} setIsLoading={setIsLoading} />
+      </ViewShot>
 
-      {/* Education Section */}
-      {resume.education.length > 0 && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Education</Text>
-          {resume.education.map((edu) => (
-            <View key={edu.id} style={styles.item}>
-              <View style={styles.itemHeader}>
-                <Text style={styles.itemTitle}>{edu.institution}</Text>
-                <Text style={styles.dates}>{edu.startDate} - {edu.endDate}</Text>
-              </View>
-              <Text style={styles.subtitle}>{edu.degree} in {edu.field}</Text>
-              {edu.description && (
-                <Text style={styles.text}>{edu.description}</Text>
-              )}
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/* Work Experience Section */}
-      {resume.workExperience.length > 0 && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Work Experience</Text>
-          {resume.workExperience.map((exp) => (
-            <View key={exp.id} style={styles.item}>
-              <View style={styles.itemHeader}>
-                <Text style={styles.itemTitle}>{exp.company}</Text>
-                <Text style={styles.dates}>{exp.startDate} - {exp.endDate}</Text>
-              </View>
-              <Text style={styles.subtitle}>{exp.position}</Text>
-              <Text style={styles.text}>{exp.description}</Text>
-              {exp.achievements.length > 0 && (
-                <View style={styles.achievements}>
-                  {exp.achievements.map((achievement, index) => (
-                    <Text key={index} style={styles.achievement}>
-                      • {achievement}
-                    </Text>
-                  ))}
-                </View>
-              )}
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/* Skills Section */}
-      {resume.skills.length > 0 && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Skills</Text>
-          <View style={styles.skillsGrid}>
-            {resume.skills.map((skill) => (
-              <View key={skill.id} style={styles.skillItem}>
-                <Text style={styles.skillName}>{skill.name}</Text>
-                <Text style={styles.skillLevel}>{skill.level}</Text>
-              </View>
-            ))}
-          </View>
-        </View>
-      )}
-
-      {/* Languages Section */}
-      {resume.languages.length > 0 && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Languages</Text>
-          <View style={styles.languagesGrid}>
-            {resume.languages.map((lang, index) => (
-              <Text key={index} style={styles.language}>
-                {lang.language} - {lang.proficiency}
-              </Text>
-            ))}
-          </View>
-          <View style={styles.actions}>
-            <View style={styles.downloadButton}>
-              <Text style={styles.downloadButtonText}>Download PDF</Text>
-            </View>
-            <CaptureOptions />
-          </View>
-        </View>
-      )}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 40,
+    padding: 20,
     backgroundColor: '#fff',
   },
   header: {
-    marginBottom: 24,
     alignItems: 'center',
+    marginBottom: 20,
   },
   name: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 4,
   },
   jobTitle: {
     fontSize: 20,
     color: '#771313',
-    marginBottom: 12,
-  },
-  contactInfo: {
-    alignItems: 'center',
   },
   contactText: {
     fontSize: 14,
-    color: 'cyan',
-    marginBottom: 2,
+    color: 'gray',
+    textAlign: 'center',
   },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    color: '#2196F3',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-    paddingBottom: 4,
-  },
-  item: {
-    marginBottom: 16,
-  },
-  itemHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  actions: {
+    marginTop: 20,
     alignItems: 'center',
-    marginBottom: 4,
   },
-  itemTitle: {
+  downloadButton: {
+    backgroundColor: '#007BFF',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  downloadButtonText: {
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
-  dates: {
-    fontSize: 14,
-    color: '#721919',
-  },
-  subtitle: {
-    fontSize: 15,
-    color: '#490505',
-    marginBottom: 4,
-  },
-  text: {
-    fontSize: 14,
-    color: '#080750',
-    lineHeight: 20,
-  },
-  achievements: {
-    marginTop: 8,
-  },
-  achievement: {
-    fontSize: 14,
-    color: '#490707',
-    marginBottom: 2,
-  },
-  skillsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-  },
-  skillItem: {
-    backgroundColor: '#f5f5f5',
-    padding: 8,
-    borderRadius: 4,
-  },
-  skillName: {
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  skillLevel: {
-    fontSize: 12,
-    color: '#078611',
-  },
-  languagesGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-  },
-  language: {
-    fontSize: 14,
-    color: '#0b7e11',
-  },
 });
+

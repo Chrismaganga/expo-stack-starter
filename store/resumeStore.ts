@@ -53,7 +53,9 @@ export interface Resume {
   education: Education[];
   workExperience: WorkExperience[];
   skills: Skill[];
-  languages: { language: string; proficiency: string }[];
+  languages: {
+    [x: string]: Key | null | undefined; language: string; proficiency: string 
+}[];
   certifications: string[];
   
   // Meta

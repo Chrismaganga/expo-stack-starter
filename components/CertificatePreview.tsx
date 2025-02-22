@@ -1,5 +1,3 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable import/order */
 import { Dimensions, Image, Platform, StyleSheet, View } from 'react-native';
 import React, { useRef } from 'react';
 
@@ -9,40 +7,33 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Text } from 'react-native-paper';
 import ViewShot from 'react-native-view-shot';
 
-// Ensure this is correctly defined in store
-
-/* eslint-disable import/order */
-
 const { width } = Dimensions.get('window');
 const CERTIFICATE_WIDTH = Math.min(width - 40, 600);
 
 const getTemplateStyles = (templateStyle: string, accentColor: string) => {
+  const parsedColor = accentColor.startsWith('#') ? accentColor : `#${accentColor}`;
+
   const baseStyles = {
     classic: {
       container: {
         borderWidth: 3,
-        borderColor: accentColor,
+        borderColor: parsedColor,
       },
-      gradientColors: [
-        `rgba(${accentColor}, 0.1)`, // Ensure valid RGBA format
-        'white',
-        'white',
-        `rgba(${accentColor}, 0.1)`,
-      ],
+      gradientColors: [`rgba(0,0,0,0.1)`, 'white', `rgba(0,0,0,0.1)`],
       header: {
         fontSize: 32,
-        color: accentColor,
+        color: parsedColor,
       },
       name: {
         fontSize: 36,
-        color: accentColor,
+        color: parsedColor,
       },
     },
     modern: {
       container: {
         borderRadius: 15,
       },
-      gradientColors: [accentColor, `rgba(${accentColor}, 0.1)`, 'white', 'white'],
+      gradientColors: [parsedColor, `rgba(0,0,0,0.1)`, 'white', 'white'],
       header: {
         fontSize: 34,
         color: '#fff',
@@ -52,22 +43,22 @@ const getTemplateStyles = (templateStyle: string, accentColor: string) => {
       },
       name: {
         fontSize: 38,
-        color: accentColor,
+        color: parsedColor,
       },
     },
     minimal: {
       container: {
         borderBottomWidth: 4,
-        borderBottomColor: accentColor,
+        borderBottomColor: parsedColor,
       },
-      gradientColors: ['white', `rgba(${accentColor}, 0.05)`, `rgba(${accentColor}, 0.1)`],
+      gradientColors: ['white', `rgba(0,0,0,0.05)`, `rgba(0,0,0,0.1)`],
       header: {
         fontSize: 32,
-        color: accentColor,
+        color: parsedColor,
       },
       name: {
         fontSize: 36,
-        color: accentColor,
+        color: parsedColor,
       },
     },
   };
@@ -82,9 +73,7 @@ interface CertificatePreviewProps {
 const CertificatePreview: React.FC<CertificatePreviewProps> = ({ certificate }) => {
   const certificateRef = useRef<ViewShot>(null);
 
-  if (!certificate) {
-    return null;
-  }
+  if (!certificate) return null;
 
   const templateStyles = getTemplateStyles(
     certificate.templateStyle ?? 'classic',
@@ -102,96 +91,70 @@ const CertificatePreview: React.FC<CertificatePreviewProps> = ({ certificate }) 
         }}
         style={styles.viewShot}
       >
-
         <View style={[styles.certificate, templateStyles.container]}>
-          <LinearGradient//-
-            colors={templateStyles.gradientColors}
-            style={styles.gradient}//-
-          />
-          <View style={styles.watermarkContainer}>//-
-            <Text style={[styles.watermark, { color: `rgba(${certificate.accentColor}, 0.1)` }]}>//-
-              CERTIFICATE//-
-            </Text>//-
-          </View>//-
+          <LinearGradient colors={templateStyles.gradientColors} style={styles.gradient} />
 
-          {certificate.logo && (
-            <Image//-
-              source={{ uri: certificate.logo }}//-
-              style={styles.logo}//-
-              resizeMode="contain"//-
-            />//-
-          )}//-
+          <View style={styles.watermarkContainer}>
+            <Text style={[styles.watermark, { color: `rgba(0,0,0,0.1)` }]}>
+              CERTIFICATE
+            </Text>
+          </View>
 
-          <Text style={[styles.header, templateStyles.header]}>//-
-            Certificate of Completion//-
-          </Text>//-
+          {certificate?.logo && (
+            <Image source={{ uri: certificate.logo }} style={styles.logo} resizeMode="contain" />
+          )}
 
-          <Text style={styles.subHeader}>This is to certify that</Text>//-
-      <Text style={[styles.name, templateStyles.name]}>//-
-            {certificate.recipientName}//-
-          </Text>//-
+          <Text style={[styles.header, templateStyles.header]}>Certificate of Completion</Text>
+          <Text style={styles.subHeader}>This is to certify that</Text>
 
-          <Text style={styles.text}>//-
-            has successfully completed the course//-
-          </Text>//-
-//-
-          <Text style={[styles.courseName, { color: certificate.accentColor }]}>//-
-            {certificate.courseName}//-
-          </Text>//-
-//-
-          <Text style={styles.description}>//-
-            {certificate.description}//-
-          </Text>//-
-//-
-          {certificate.achievements?.length > 0 && (//-
-            <View style={styles.achievementsContainer}>//-
-              <Text style={styles.achievementsHeader}>Achievements:</Text>//-
-              {certificate.achievements.map((achievement, index) => (//-
-                achievement && (//-
-                  <Text key={index} style={styles.achievement}>//-
-                    • {achievement}//-
-                  </Text>//-
-                )//-
-              ))}//-
-            </View>//-
-          )}//-
-//-
-          {certificate.grade && (//-
-            <Text style={styles.grade}>//-
-              Grade: {certificate.grade}//-
-            </Text>//-
-          )}//-
-//-
-          <Text style={styles.duration}>//-
-            Duration: {certificate.duration}//-
-          </Text>//-
-//-
-          <Text style={styles.date}>//-
-            Completed on {new Date(certificate.completionDate).toLocaleDateString()}//-
-          </Text>//-
-//-
-          <View style={styles.footer}>//-
-            <View style={styles.signatureContainer}>//-
-              <View style={[styles.signatureLine, { backgroundColor: certificate.accentColor }]} />//-
-              <Text style={styles.issuerName}>//-
-                {certificate.issuerName}//-
-              </Text>//-
-              <Text style={styles.issuerTitle}>//-
-                {certificate.issuerTitle}//-
-              </Text>//-
-            </View>//-
-//-
-            <Text style={styles.certificateNumber}>//-
-              Certificate Number: {certificate.certificateNumber}//-
-            </Text>//-
-          </View>//-
-        </View>//-
-"conversationId":"f4bdca05-ecd1-479a-b8f1-bbc2eab30669","source":"instruct"}
+          <Text style={[styles.name, templateStyles.name]}>{certificate?.recipientName}</Text>
+
+          <Text style={styles.text}>has successfully completed the course</Text>
+          <Text style={[styles.courseName, { color: certificate?.accentColor }]}>
+            {certificate?.courseName}
+          </Text>
+
+          <Text style={styles.description}>{certificate?.description}</Text>
+
+          {certificate?.achievements?.length > 0 && (
+            <View style={styles.achievementsContainer}>
+              <Text style={styles.achievementsHeader}>Achievements:</Text>
+              {certificate.achievements.map((achievement, index) =>
+                achievement ? (
+                  <Text key={index} style={styles.achievement}>
+                    • {achievement}
+                  </Text>
+                ) : null
+              )}
+            </View>
+          )}
+
+          {certificate?.grade && <Text style={styles.grade}>Grade: {certificate.grade}</Text>}
+
+          <Text style={styles.duration}>Duration: {certificate?.duration}</Text>
+          <Text style={styles.date}>
+            Completed on {new Date(certificate?.completionDate).toLocaleDateString()}
+          </Text>
+
+          <View style={styles.footer}>
+            <View style={styles.signatureContainer}>
+              <View style={[styles.signatureLine, { backgroundColor: certificate?.accentColor }]} />
+              <Text style={styles.issuerName}>{certificate?.issuerName}</Text>
+              <Text style={styles.issuerTitle}>{certificate?.issuerTitle}</Text>
+            </View>
+
+            <Text style={styles.certificateNumber}>
+              Certificate Number: {certificate?.certificateNumber}
+            </Text>
+          </View>
+        </View>
       </ViewShot>
 
       <CertificateActions
         certificate={certificate}
         certificateRef={certificateRef}
+        setIsLoading={() => {}}
+        options={undefined}
       />
     </View>
   );
@@ -258,6 +221,31 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 15,
     textAlign: 'center',
+  },
+  description: {
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  duration: {
+    marginTop: 10,
+  },
+  date: {
+    marginTop: 5,
+  },
+  footer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  signatureContainer: {
+    alignItems: 'center',
+  },
+  signatureLine: {
+    height: 2,
+    width: 100,
+    marginVertical: 5,
+  },
+  certificateNumber: {
+    marginTop: 10,
   },
 });
 

@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { CertificateInterface, CertificatePreview } from '../../components/CertificatePreview';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { StyleSheet, View } from 'react-native';

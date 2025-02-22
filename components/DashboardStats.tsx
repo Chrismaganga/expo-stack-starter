@@ -1,14 +1,21 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
 import { Card, Text, useTheme } from 'react-native-paper';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useCertificateStore } from '../store/store';
-import { useResumeStore } from '../store/resumeStore';
+import { Certificate, useCertificateStore } from '../store/store';
+import { Resume, useResumeStore } from '../store/resumeStore';
+import { StyleSheet, View } from 'react-native';
 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import React from 'react';
+
+type DashboardStatsProps = {
+  certificates: Certificate[];
+  resumes: Resume[];
+  names: string[];
+};
 export default function DashboardStats() {
   const theme = useTheme();
   const certificates = useCertificateStore((state) => state.certificates);
   const resumes = useResumeStore((state) => state.resumes);
+  
 
   const stats = [
     {

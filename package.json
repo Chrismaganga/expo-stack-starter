@@ -3,20 +3,12 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
-   
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "start": "expo start",
-    "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
-    "test": "jest --watchAll",
-    "build:dev": "eas build --profile development",
-    "build:preview": "eas build --profile preview",
-    "build:prod": "eas build --profile production",
-    "prebuild": "expo prebuild",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
-    "precommit": "npm run lint && npm run format"
+    "web": "expo start --web"
   },
   "dependencies": {
     "@expo/react-native-action-sheet": "^4.1.0",
@@ -37,7 +29,7 @@
     "clsx": "^2.1.0",
     "expo": "^52.0.11",
     "expo-constants": "~17.0.3",
-    "expo-dev-client": "~5.0.4",
+    "expo-dev-client": "~5.0.12",
     "expo-dev-launcher": "^5.0.17",
     "expo-document-picker": "^13.0.2",
     "expo-file-system": "^18.0.7",
